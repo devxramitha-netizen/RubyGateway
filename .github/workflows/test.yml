@@ -32,6 +32,13 @@ jobs:
           ruby -e 'puts RbConfig::TOPDIR'
           ruby -e 'puts RbConfig::CONFIG'
           gem env
+      - name: Restore Swift package dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: .build/checkouts
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.swift') }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
       - name: CRuby
         run: |
           swift package update 
@@ -40,6 +47,12 @@ jobs:
           cat Packages/CRuby/CRuby.pc
           cat Packages/CRuby/Sources/CRuby/module.modulemap
           cat Packages/CRuby/Sources/CRuby/ruby_headers.h
+      - name: Save Swift package dependencies
+        uses: actions/cache/save@v4
+        with:
+          path: .build/checkouts
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.swift') }}
+        continue-on-error: true
       - name: Tests (SPM)
         run: |
           export PKG_CONFIG_PATH=$(pwd)/Packages/CRuby:$PKG_CONFIG_PATH
@@ -93,6 +106,13 @@ jobs:
           ruby -e 'puts RbConfig::CONFIG'
           gem env
           ls -l /opt/hostedtoolcache/Ruby
+      - name: Restore Swift package dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: .build/checkouts
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.swift') }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
       - name: CRuby
         run: |
           swift package update 
@@ -101,6 +121,12 @@ jobs:
           cat Packages/CRuby/CRuby.pc
           cat Packages/CRuby/Sources/CRuby/module.modulemap
           cat Packages/CRuby/Sources/CRuby/ruby_headers.h
+      - name: Save Swift package dependencies
+        uses: actions/cache/save@v4
+        with:
+          path: .build/checkouts
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('Package.swift') }}
+        continue-on-error: true
       - name: Tests
         run: |
           export PKG_CONFIG_PATH=$(pwd)/Packages/CRuby:$PKG_CONFIG_PATH
